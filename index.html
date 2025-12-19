@@ -262,62 +262,86 @@
             color: #ecf0f1;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        /* Responsividade para smartphones */
-@media (max-width: 768px) {
-    .container {
-        padding: 0 10px;
-    }
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                padding: 15px;
+                gap: 20px;
+            }
 
+            .tree-container,
+            .test-panel {
+                width: 100% !important;
+                min-width: unset;
+                max-width: unset;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-size: 14px;
+            }
+
+            .test-panel h2,
+            .directory-tree h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .directory-tree {
+                overflow-x: auto;
+                padding-right: 10px;
+            }
+        }
+        /* Ajustes para telas muito pequenas (ex: iPhone SE - 320px de largura) */
+@media (max-width: 320px) {
     .main-content {
-        flex-direction: column;
-        padding: 16px;
-        gap: 20px;
-        max-width: 100%;
+        padding: 12px;
+        gap: 16px;
     }
 
     .tree-container {
-        width: 100% !important;
-        min-height: 300px;
-        max-height: 50vh; /* Evita que ocupe toda a tela */
-        padding: 16px;
-        box-sizing: border-box;
+        padding: 12px;
+        max-height: 45vh; /* reduzido para dar espaço à pergunta */
     }
 
     .test-panel {
-        width: 100% !important;
-        padding: 20px;
-        box-sizing: border-box;
+        padding: 16px;
     }
 
     .question-text {
-        font-size: 1.4rem; /* Reduzido para caber melhor */
-        padding: 0 8px;
+        font-size: 1.4rem; /* reduzido para caber melhor */
+        line-height: 1.4;
+    }
+
+    .question-number {
+        font-size: 1rem;
     }
 
     .submit-btn {
         padding: 14px;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
-    /* Garante que a árvore não quebre o layout */
-    .directory-tree {
-        font-size: 0.95rem;
-    }
-
-    .tree-item {
-        padding: 12px 10px;
-    }
-
-    /* Tela de início */
     .start-card {
-        padding: 24px;
-        max-width: 100%;
+        padding: 20px;
     }
 
     .start-card input,
     .start-card button {
-        padding: 14px;
-        font-size: 1rem;
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .tree-item {
+        padding: 10px 8px;
+        font-size: 0.875rem;
+    }
+
+    .tree-header {
+        font-size: 1.15rem;
+        margin-bottom: 12px;
     }
 }
         
