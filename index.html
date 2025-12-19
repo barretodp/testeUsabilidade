@@ -262,14 +262,39 @@
             color: #ecf0f1;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        @media (max-width: 900px) {
+        /* Responsividade para mobile */
+        @media (max-width: 768px) {
             .main-content {
                 flex-direction: column;
+                padding: 15px;
+                gap: 20px;
             }
+
+            .tree-container,
             .test-panel {
-                width: 100%;
+                width: 100% !important;
+                min-width: unset;
+                max-width: unset;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-size: 14px;
+            }
+
+            .test-panel h2,
+            .directory-tree h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .directory-tree {
+                overflow-x: auto;
+                padding-right: 10px;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -1012,6 +1037,8 @@
                 document.body.appendChild(thankYouScreen);
             }
         });
+
+        
     </script>
 </body>
 </html>
