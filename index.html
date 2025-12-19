@@ -262,38 +262,64 @@
             color: #ecf0f1;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-        /* Responsividade para mobile */
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-                padding: 15px;
-                gap: 20px;
-            }
+        /* Responsividade para smartphones */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
 
-            .tree-container,
-            .test-panel {
-                width: 100% !important;
-                min-width: unset;
-                max-width: unset;
-                padding: 15px;
-                box-sizing: border-box;
-            }
+    .main-content {
+        flex-direction: column;
+        padding: 16px;
+        gap: 20px;
+        max-width: 100%;
+    }
 
-            body {
-                font-size: 14px;
-            }
+    .tree-container {
+        width: 100% !important;
+        min-height: 300px;
+        max-height: 50vh; /* Evita que ocupe toda a tela */
+        padding: 16px;
+        box-sizing: border-box;
+    }
 
-            .test-panel h2,
-            .directory-tree h3 {
-                font-size: 16px;
-                margin-bottom: 10px;
-            }
+    .test-panel {
+        width: 100% !important;
+        padding: 20px;
+        box-sizing: border-box;
+    }
 
-            .directory-tree {
-                overflow-x: auto;
-                padding-right: 10px;
-            }
-        }
+    .question-text {
+        font-size: 1.4rem; /* Reduzido para caber melhor */
+        padding: 0 8px;
+    }
+
+    .submit-btn {
+        padding: 14px;
+        font-size: 1.1rem;
+    }
+
+    /* Garante que a árvore não quebre o layout */
+    .directory-tree {
+        font-size: 0.95rem;
+    }
+
+    .tree-item {
+        padding: 12px 10px;
+    }
+
+    /* Tela de início */
+    .start-card {
+        padding: 24px;
+        max-width: 100%;
+    }
+
+    .start-card input,
+    .start-card button {
+        padding: 14px;
+        font-size: 1rem;
+    }
+}
         
     </style>
 </head>
