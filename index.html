@@ -837,50 +837,56 @@
             let responses = [];
 
             const questions = [
-// QUESTÃO 1 - "07 COMUNICAÇÕES / VÍDEO CONFERÊNCIA"
-            {
-                text: "Estou à procura da documentação ou das configurações relativas à videoconferência corporativa. Em que diretório devo procurar?"
-            },
-            // QUESTÃO 2 - "01 MICROINFORMATIVA / IMPRESSORAS E SCANNERS"
-            {
-                text: "Preciso localizar a lista atualizada de impressoras e scanners da empresa. Onde está essa informação armazenada?"
-            },
-            // QUESTÃO 3 - "04 SISTEMAS / DHCP"
-            {
-                text: "Preciso ajustar as configurações do protocolo DHCP num equipamento. Onde está a pasta que contém este conteúdo?"
-            },
-            // QUESTÃO 4 - "02 SOFTWARE / WINDOWS"
-            {
-                text: "Preciso instalar o Windows Server num novo servidor e tenho de localizar a licença válida. Em que pasta devo procurar?"
-            },
-            // QUESTÃO 5 - "04 SISTEMAS / BACKUP" OU "08 GOVERNANÇA / POLÍTICAS TRANSVERSAIS"
-            // (Ajustado para apontar claramente a "04 SISTEMAS / BACKUP", que é mais técnica e operacional)
-            {
-                text: "Estou a preparar uma auditoria interna e preciso das políticas e dos procedimentos oficiais de backup. Onde os posso encontrar?"
-            },
-            // QUESTÃO 6 - "06 SISTEMAS DE SEGURANÇA FÍSICA / CONTROLO_ACESSO"
-            {
-                text: "Onde posso encontrar a documentação sobre o controlo de acesso físico aos servidores?"
-            },
-            // QUESTÃO 7 - "05 REDES / VLANS"
-            {
-                text: "Preciso configurar uma nova VLAN para um projeto. Onde está a documentação?"
-            },
-            // QUESTÃO 8 - "04 SISTEMAS / DNS"
-            {
-                text: "Onde estão os ficheiros de configuração do serviço DNS?"
-            },
-            // QUESTÃO 9 - "01 MICROINFORMATIVA / IPADS" ou "PDAs"
-            // (Assumindo "tablets" como IPADs, já que são mencionados explicitamente)
-            {
-                text: "Preciso localizar o manual de utilização dos tablets corporativos. Onde o encontro?"
-            },
-            // QUESTÃO 10 - "08 GOVERNANÇA / AUDITORIA E RELATÓRIOS"
-            {
-                text: "Onde encontrar os relatórios de auditoria do setor de informática do último trimestre?"
-            }
-                
+                // QUESTÃO 1 - "07 COMUNICAÇÕES / VÍDEO CONFERÊNCIA"
+                {
+                    text: "Estou à procura da documentação ou das configurações relativas à VIDEOCONFERENCIA. Em que diretório devo procurar?"
+                },
+                // QUESTÃO 2 - "01 MICROINFORMATIVA / IMPRESSORAS E SCANNERS"
+                {
+                    text: "Preciso localizar a lista atualizada de IMPRESSORAS E SCANNERS. Onde está essa informação armazenada?"
+                },
+                // QUESTÃO 3 - "04 SISTEMAS / DHCP"
+                {
+                    text: "Preciso ajustar as configurações do protocolo DHCP num equipamento. Onde está a pasta que contém este conteúdo?"
+                },
+                // QUESTÃO 4 - "02 SOFTWARE / WINDOWS"
+                {
+                    text: "Preciso instalar o Windows Server num novo servidor e tenho de localizar a LICENÇA válida. Em que pasta devo procurar?"
+                },
+                // QUESTÃO 5 - "03 DATA CENTER / STORAGE"
+                {
+                    text: "Preciso encontrar a documentação e os ficheiros relacionados ao STORAGE. Onde devo procurar?"
+                },
+                // QUESTÃO 6 - "06 SISTEMAS DE SEGURANÇA FÍSICA / CONTROLO_ACESSO"
+                {
+                    text: "Onde posso encontrar a documentação sobre o CONTROLO DE ACESSO?"
+                },
+                // QUESTÃO 7 - "05 REDES / VLANS"
+                {
+                    text: "Preciso configurar uma nova VLAN para um nova região. Onde está a documentação?"
+                },
+                // QUESTÃO 8 - "04 SISTEMAS / DNS"
+                {
+                    text: "Onde estão os ficheiros de configuração do serviço DNS?"
+                },
+                // QUESTÃO 9 - "01 MICROINFORMATIVA / IPADS" ou "PDAs"
+                {
+                    text: "Preciso localizar o MANUAL de utilização dos tablets. Onde o encontro?"
+                },
+                // QUESTÃO 10 - "08 GOVERNANÇA / AUDITORIA E RELATÓRIOS"
+                {
+                    text: "Onde encontrar os RELATÓRIO DE AUDITORIA do setor de informática do último trimestre?"
+                },
+                // QUESTÃO 11 - "IP da impressora"
+                {
+                    text: "Preciso saber o número de IP atribuído à impressora. Onde encontro essa informação?"
+                },
+                // QUESTÃO 12 - "Ativação do Office"
+                {
+                    text: "Preciso localizar a documentação ou a chave de ATIVAÇÃO do Microsoft Office. Em que diretório devo procurar?"
+                }
             ];
+
 
             function formatTime(seconds) {
                 const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
@@ -955,11 +961,11 @@
                 const formData = new FormData();
                 formData.append('Participante', participant);
                 formData.append('Data', new Date().toLocaleDateString());
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 12; i++) {
                     formData.append(`Questão ${i+1}`, formatTime(times[i] || 0));
                 }
                 formData.append('Tempo Total', formatTime(totalTime));
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 12; i++) {
                     formData.append(`Respostas ${i+1}`, responses[i] || '');
                 }
 
