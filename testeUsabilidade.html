@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TESTE DE USABILIDADE - FILE SERVER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #222 0%, #444 50%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        .main-content {
+            display: flex;
+            gap: 30px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .tree-container {
+            flex: 1;
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            max-height: 700px;
+            overflow-y: auto;
+            position: relative;
+        }
+        .tree-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #414141;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .directory-tree {
+            list-style: none;
+            padding-left: 0;
+        }
+        .tree-item {
+            margin: 6px 0;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            font-size: 0.95rem;
+            color: #222;
+            position: relative;
+        }
+        .tree-item:hover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            transform: translateY(-1px);
+        }
+        .tree-item.active {
+            background: #bbdefb;
+            border-color: #2196f3;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+        }
+        .folder-icon {
+            color: #ff9800;
+            width: 18px;
+            height: 18px;
+        }
+        .test-panel {
+            width: 350px;
+            background: #333;
+            border-radius: 15px;
+            padding: 25px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .test-header {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ecf0f1;
+        }
+        .question-section {
+            background: #444;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .question-number {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #3498db;
+            text-align: center;
+        }
+        .question-text {
+            color: #ecf0f1;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .nested {
+            display: none;
+            margin-left: 20px;
+            padding-left: 15px;
+        }
+        .tree-item.expanded + .nested {
+            display: block;
+        }
+        /* Estilo para árvore com linhas */
+        .tree-item::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            width: 1px;
+            height: 100%;
+            background: #ccc;
+            z-index: -1;
+        }
+        .tree-item:last-child::before {
+            height: 50%;
+        }
+        .tree-item:first-child::before {
+            top: 50%;
+            height: 50%;
+        }
+        .tree-item > .folder-icon {
+            margin-right: 5px;
+        }
+        /* Centralizar tela inicial */
+        .start-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        .start-card {
+            background: #333;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .start-card h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        .start-card input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background: #444;
+            color: white;
+            font-size: 1rem;
+        }
+        .start-card button {
+            width: 100%;
+            padding: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .start-card button:hover {
+            background: #c0392b;
+        }
+        /* Tela de agradecimento */
+        .thank-you-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #222 0%, #444 50%);
+        }
+        .thank-you-message {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .test-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TESTE DE USABILIDADE - FILE SERVER</h1>
+            <p class="subtitle">Responda o mais rápido que puder.</p>
+        </header>
+        <!-- Tela de início -->
+        <div class="start-screen" id="startScreen">
+            <div class="start-card">
+                <h2>Bem-vindo ao Teste</h2>
+                <input type="text" id="participantNameInput" placeholder="Seu nome" />
+                <button id="startTestBtn">Iniciar Teste</button>
+            </div>
+        </div>
+        <!-- Tela do teste -->
+        <div class="main-content" id="testScreen" style="display:none;">
+            <div class="tree-container">
+                <div class="tree-header">Estrutura de Diretórios</div>
+                <ul class="directory-tree" id="directoryTree">
+                    <!-- 01 MICROINFORMATIVA -->
+                    <li>
+                        <div class="tree-item" data-path="01 MICROINFORMATIVA">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            01 MICROINFORMATIVA
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="01 MICROINFORMATIVA/DESKTOPS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    DESKTOPS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/DESKTOPS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/DESKTOPS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="01 MICROINFORMATIVA/PORTÁTEIS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    PORTÁTEIS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/PORTÁTEIS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/PORTÁTEIS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="01 MICROINFORMATIVA/IPADS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    IPADS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/IPADS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/IPADS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="01 MICROINFORMATIVA/PDAs">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    PDAs
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/PDAs/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/PDAs/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="01 MICROINFORMATIVA/IMPRESSORAS E SCANNERS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    IMPRESSORAS E SCANNERS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/IMPRESSORAS E SCANNERS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="01 MICROINFORMATIVA/IMPRESSORAS E SCANNERS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 02 SOFTWARE -->
+                    <li>
+                        <div class="tree-item" data-path="02 SOFTWARE">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            02 SOFTWARE
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="02 SOFTWARE/AUTODESK">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    AUTODESK
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/AUTODESK/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/AUTODESK/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/AUTODESK/CONTRATO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>CONTRATO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/AUTODESK/LICENÇAS"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>LICENÇAS</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="02 SOFTWARE/ADOBE">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    ADOBE
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/ADOBE/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/ADOBE/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/ADOBE/CONTRATO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>CONTRATO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/ADOBE/LICENÇAS"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>LICENÇAS</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="02 SOFTWARE/OFFICE">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    OFFICE
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/OFFICE/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/OFFICE/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/OFFICE/CONTRATO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>CONTRATO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/OFFICE/LICENÇAS"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>LICENÇAS</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="02 SOFTWARE/PROJECT">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    PROJECT
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/PROJECT/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/PROJECT/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/PROJECT/CONTRATO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>CONTRATO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/PROJECT/LICENÇAS"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>LICENÇAS</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="02 SOFTWARE/WINDOWS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    WINDOWS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/WINDOWS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/WINDOWS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/WINDOWS/CONTRATO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>CONTRATO</div></li>
+                                    <li><div class="tree-item" data-path="02 SOFTWARE/WINDOWS/LICENÇAS"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>LICENÇAS</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 03 DATA CENTER -->
+                    <li>
+                        <div class="tree-item" data-path="03 DATA CENTER">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            03 DATA CENTER
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="03 DATA CENTER/SERVIDORES FÍSICOS E VIRTUAIS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    SERVIDORES FÍSICOS E VIRTUAIS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="03 DATA CENTER/SERVIDORES FÍSICOS E VIRTUAIS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="03 DATA CENTER/SERVIDORES FÍSICOS E VIRTUAIS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="03 DATA CENTER/STORAGE">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    STORAGE
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="03 DATA CENTER/STORAGE/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="03 DATA CENTER/STORAGE/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 04 SISTEMAS -->
+                    <li>
+                        <div class="tree-item" data-path="04 SISTEMAS">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            04 SISTEMAS
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="04 SISTEMAS/BACKUP">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    BACKUP
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/BACKUP/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/BACKUP/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="04 SISTEMAS/CIBERSEGURANÇA">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    CIBERSEGURANÇA
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/CIBERSEGURANÇA/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/CIBERSEGURANÇA/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="04 SISTEMAS/ACTIVE DIRECTORY">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    ACTIVE DIRECTORY
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/ACTIVE DIRECTORY/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/ACTIVE DIRECTORY/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="04 SISTEMAS/GPO">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    GPO
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/GPO/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/GPO/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="04 SISTEMAS/FILE SERVER">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    FILE SERVER
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/FILE SERVER/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/FILE SERVER/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="04 SISTEMAS/DHCP">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    DHCP
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/DHCP/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/DHCP/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="04 SISTEMAS/DNS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    DNS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/DNS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="04 SISTEMAS/DNS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 05 REDES -->
+                    <li>
+                        <div class="tree-item" data-path="05 REDES">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            05 REDES
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="05 REDES/SWITCHS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    SWITCHS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="05 REDES/SWITCHS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="05 REDES/SWITCHS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="05 REDES/IPS PÚBLCOS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    IPS PÚBLCOS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="05 REDES/IPS PÚBLCOS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="05 REDES/IPS PÚBLCOS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="05 REDES/VLANS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    VLANS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="05 REDES/VLANS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="05 REDES/VLANS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="05 REDES/CERTIFICADOS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    CERTIFICADOS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="05 REDES/CERTIFICADOS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="05 REDES/CERTIFICADOS/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="05 REDES/DOMÍNIO_PROVEDORES">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    DOMÍNIO_PROVEDORES
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="05 REDES/DOMÍNIO_PROVEDORES/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="05 REDES/DOMÍNIO_PROVEDORES/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="05 REDES/WIFI_ACCESS POINT">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    WIFI_ACCESS POINT
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="05 REDES/WIFI_ACCESS POINT/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                    <li><div class="tree-item" data-path="05 REDES/WIFI_ACCESS POINT/!Instruções e Docs"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!Instruções e Docs</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 06 SISTEMAS DE SEGURANÇA FÍSICA -->
+                    <li>
+                        <div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            06 SISTEMAS DE SEGURANÇA FÍSICA
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/CAMERAS_CCTV">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    CAMERAS_CCTV
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/CAMERAS_CCTV/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/CONTROLO_ACESSO">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    CONTROLO_ACESSO
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/CONTROLO_ACESSO/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/ALARMES">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    ALARMES
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/ALARMES/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/SENSORES">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    SENSORES
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/SENSORES/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/INCENDIO">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    INCENDIO
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="06 SISTEMAS DE SEGURANÇA FÍSICA/INCENDIO/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 07 COMUNICAÇÕES -->
+                    <li>
+                        <div class="tree-item" data-path="07 COMUNICAÇÕES">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            07 COMUNICAÇÕES
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="07 COMUNICAÇÕES/TELEFONIA">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    TELEFONIA
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="07 COMUNICAÇÕES/TELEFONIA/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="07 COMUNICAÇÕES/VÍDEO CONFERÊNCIA">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    VÍDEO CONFERÊNCIA
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="07 COMUNICAÇÕES/VÍDEO CONFERÊNCIA/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- 08 GOVERNANÇA -->
+                    <li>
+                        <div class="tree-item" data-path="08 GOVERNANÇA">
+                            <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                            </svg>
+                            08 GOVERNANÇA
+                        </div>
+                        <ul class="nested">
+                            <li>
+                                <div class="tree-item" data-path="08 GOVERNANÇA/ATIVOS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    ATIVOS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="08 GOVERNANÇA/ATIVOS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="08 GOVERNANÇA/POLÍTICAS TRANSVERSAIS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    POLÍTICAS TRANSVERSAIS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="08 GOVERNANÇA/POLÍTICAS TRANSVERSAIS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="08 GOVERNANÇA/GESTÃO DE INCIDENTES">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    GESTÃO DE INCIDENTES
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="08 GOVERNANÇA/GESTÃO DE INCIDENTES/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="08 GOVERNANÇA/AUDITORIA E RELATÓRIOS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    AUDITORIA E RELATÓRIOS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="08 GOVERNANÇA/AUDITORIA E RELATÓRIOS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="tree-item" data-path="08 GOVERNANÇA/RECURSOS">
+                                    <svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/>
+                                    </svg>
+                                    RECURSOS
+                                </div>
+                                <ul class="nested">
+                                    <li><div class="tree-item" data-path="08 GOVERNANÇA/RECURSOS/!ARQUIVO"><svg class="folder-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2h-8l-2-2z"/></svg>!ARQUIVO</div></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="test-panel">
+                <h2 class="test-header">Responda</h2>
+                <div class="question-section">
+                    <div class="question-number" id="questionNumber">Pergunta 1 de 5</div>
+                    <div class="question-text" id="questionText">Onde está localizado o arquivo de contratos do software AUTODESK?</div>
+                    <button class="submit-btn" id="submitAnswer" disabled>Responder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startScreen = document.getElementById('startScreen');
+            const testScreen = document.getElementById('testScreen');
+            const participantInput = document.getElementById('participantNameInput');
+            const startBtn = document.getElementById('startTestBtn');
+            const treeItems = document.querySelectorAll('.tree-item');
+            const submitBtn = document.getElementById('submitAnswer');
+            const questionNumberEl = document.getElementById('questionNumber');
+            const questionTextEl = document.getElementById('questionText');
+            let participantName = '';
+            let currentSelection = null;
+            let currentQuestion = 1;
+            let startTime = null;
+            let questionTimes = [];
+            let responses = [];
+
+            const questions = [
+                {
+                    text: "Onde está localizado o arquivo de contratos do software AUTODESK?",
+                    correctPath: "02 SOFTWARE/AUTODESK/CONTRATO"
+                },
+                {
+                    text: "Onde estão os arquivos de instruções dos servidores físicos e virtuais?",
+                    correctPath: "03 DATA CENTER/SERVIDORES FÍSICOS E VIRTUAIS/!Instruções e Docs"
+                },
+                {
+                    text: "Onde está localizado o arquivo de configuração do sistema DHCP?",
+                    correctPath: "04 SISTEMAS/DHCP/!ARQUIVO"
+                },
+                {
+                    text: "Onde estão os arquivos relacionados às câmeras de segurança CCTV?",
+                    correctPath: "06 SISTEMAS DE SEGURANÇA FÍSICA/CAMERAS_CCTV/!ARQUIVO"
+                },
+                {
+                    text: "Onde está o arquivo de políticas transversais da governança?",
+                    correctPath: "08 GOVERNANÇA/POLÍTICAS TRANSVERSAIS/!ARQUIVO"
+                }
+            ];
+
+            function formatTime(seconds) {
+                const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+                const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+                const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+                return `${h}:${m}:${s}`;
+            }
+
+            startBtn.addEventListener('click', function() {
+                const name = participantInput.value.trim();
+                if (!name) {
+                    alert('Por favor, insira seu nome.');
+                    return;
+                }
+                participantName = name;
+                startScreen.style.display = 'none';
+                testScreen.style.display = 'flex';
+                loadQuestion(1);
+            });
+
+            treeItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    treeItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSelection = this.getAttribute('data-path');
+                    submitBtn.disabled = false;
+
+                    const nested = this.nextElementSibling;
+                    if (nested && nested.classList.contains('nested')) {
+                        this.classList.toggle('expanded');
+                    }
+                });
+            });
+
+            function loadQuestion(questionIndex) {
+                const question = questions[questionIndex - 1];
+                questionNumberEl.textContent = `Pergunta ${questionIndex} de ${questions.length}`;
+                questionTextEl.textContent = question.text;
+
+                treeItems.forEach(item => {
+                    item.classList.remove('active', 'expanded');
+                });
+                const allNested = document.querySelectorAll('.nested');
+                allNested.forEach(nested => nested.style.display = 'none');
+
+                currentSelection = null;
+                submitBtn.disabled = true;
+                startTime = new Date();
+            }
+
+            submitBtn.addEventListener('click', function() {
+                if (!currentSelection || !participantName) {
+                    alert('Por favor, preencha seu nome e selecione um diretório.');
+                    return;
+                }
+                const endTime = new Date();
+                const timeTaken = (endTime - startTime) / 1000;
+                questionTimes.push(timeTaken);
+                responses.push(currentSelection);
+                currentQuestion++;
+
+                if (currentQuestion <= questions.length) {
+                    loadQuestion(currentQuestion);
+                } else {
+                    const totalTime = questionTimes.reduce((sum, t) => sum + t, 0);
+                    sendToSheetMonkey(participantName, questionTimes, totalTime, responses);
+                }
+            });
+
+            function sendToSheetMonkey(participant, times, totalTime, responses) {
+                const formData = new FormData();
+                formData.append('Participante', participant);
+                formData.append('Data', new Date().toLocaleDateString());
+                for (let i = 0; i < 5; i++) {
+                    formData.append(`Questão ${i+1}`, formatTime(times[i] || 0));
+                }
+                formData.append('Tempo Total', formatTime(totalTime));
+                for (let i = 0; i < 5; i++) {
+                    formData.append(`Respostas ${i+1}`, responses[i] || '');
+                }
+
+                fetch('https://api.sheetmonkey.io/form/fWM4jxQDMteohKqoqAK66U', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showThankYouScreen();
+                    } else {
+                        throw new Error('Falha no envio');
+                    }
+                })
+                .catch(error => {
+                    alert('❌ Erro ao enviar dados. Tente novamente.');
+                    console.error('Erro:', error);
+                });
+            }
+
+            function showThankYouScreen() {
+                testScreen.style.display = 'none';
+                const thankYouScreen = document.createElement('div');
+                thankYouScreen.id = 'thankYouScreen';
+                thankYouScreen.className = 'thank-you-screen';
+                thankYouScreen.innerHTML = `
+                    <div class="thank-you-message">Obrigado. Teste finalizado com sucesso!</div>
+                `;
+                document.body.appendChild(thankYouScreen);
+            }
+        });
+    </script>
+</body>
+</html>
+
