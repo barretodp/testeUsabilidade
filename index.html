@@ -14,12 +14,17 @@
         body {
             background: linear-gradient(135deg, #222 0%, #444 50%);
             min-height: 100vh;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
             color: white;
+            width: 100vw;
+            overflow-x: hidden;
         }
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            max-width: 100%;
+            margin: 0;
+            padding: 0 10px;
+            box-sizing: border-box;
         }
         header {
             text-align: center;
@@ -42,9 +47,14 @@
             gap: 30px;
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 50px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
+            overflow: auto;
+            max-width: 1200px;
+            margin: 0 auto;   
+            padding: 0 80px;  
+            box-sizing: border-box;
+
         }
         .tree-container {
             flex: 1;
@@ -52,9 +62,11 @@
             border-radius: 15px;
             padding: 20px;
             border: 1px solid #ddd;
-            max-height: 700px;
+            max-height: 1200px;
             overflow-y: auto;
             position: relative;
+            margin: 40px;
+
         }
         .tree-header {
             font-size: 1.3rem;
@@ -68,6 +80,7 @@
         .directory-tree {
             list-style: none;
             padding-left: 0;
+            margin-bottom: 0px;
         }
         .tree-item {
             margin: 6px 0;
@@ -108,6 +121,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            margin: 40px;
         }
         .test-header {
             font-size: 1.4rem;
